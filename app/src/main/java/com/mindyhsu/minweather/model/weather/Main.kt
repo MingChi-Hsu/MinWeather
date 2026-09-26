@@ -9,8 +9,8 @@ data class Main(
     @SerialName("feels_like") val feelsLike: Double,
     @SerialName("temp_min") val tempMin: Double,
     @SerialName("temp_max") val tempMax: Double,
-    val pressure: Int,
-    val humidity: Int,
-    @SerialName("sea_level") val seaLevel: Int,
-    @SerialName("grnd_level") val groundLevel: Int
+    val pressure: Int? = null,
+    val humidity: Int? = null,
+    @SerialName("sea_level") val seaLevel: Int? = null,
+    @SerialName("grnd_level") val groundLevel: Int? = null
 )

@@ -9,7 +9,7 @@ data class LocationInfo(
     @SerialName("local_names") val localNames: Map<String, String>? = null,
     val lat: Double,
     val lon: Double,
-    val country: String,
+    val country: String? = null,
     val state: String? = null
 ) {
     fun displayName() = listOfNotNull(name, state, country).joinToString(", ")

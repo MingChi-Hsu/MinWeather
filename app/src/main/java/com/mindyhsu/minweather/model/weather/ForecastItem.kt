@@ -7,12 +7,12 @@ import kotlinx.serialization.Serializable
 data class ForecastItem(
     val dt: Long,
     val main: Main,
-    val weather: List<Weather>,
-    val clouds: Clouds,
-    val wind: Wind,
-    val visibility: Int,
-    val pop: Double, // probability of precipitation
+    val weather: List<Weather> = emptyList(),
+    val clouds: Clouds? = null,
+    val wind: Wind? = null,
+    val visibility: Int? = null,
+    val pop: Double? = null, // probability of precipitation
     val rain: RainAndSnow3H? = null,
-    val sys: Pod, // Part of the Day
-    @SerialName("dt_txt") val dtTxt: String
+    val sys: Pod? = null, // Part of the Day
+    @SerialName("dt_txt") val dtTxt: String? = null
 )

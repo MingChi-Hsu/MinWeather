@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Forecast(
-    val cod: String,
-    val message: Int,
-    @SerialName("cnt") val numTimestamp: Int,
+    val cod: String? = null,
+    val message: Int? = null,
+    @SerialName("cnt") val numTimestamp: Int? = null,
     val list: List<ForecastItem>,
-    val city: City
+    val city: City? = null
 )

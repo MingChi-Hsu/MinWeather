@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class City(
-    val id: Int,
-    val name: String,
-    val coord: Coordinator,
-    val country: String,
-    val population: Int,
-    val timezone: Int,
-    val sunrise: Long,
-    val sunset: Long
+    val id: Int? = null,
+    val name: String? = null,
+    val coord: Coordinator? = null,
+    val country: String? = null,
+    val population: Int? = null,
+    val timezone: Int? = null,
+    val sunrise: Long? = null,
+    val sunset: Long? = null
 )

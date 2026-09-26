@@ -55,11 +55,10 @@ fun WeatherScreen(
     ) {
         item {
             LocationHeader(
-                location = stringResource(
-                    id = R.string.two_parameters_with_comma,
-                    data.currentWeather.name,
-                    data.currentWeather.sys.country
-                ),
+                location = listOfNotNull(data.currentWeather.name, data.currentWeather.sys?.country)
+                    .filter { it.isNotBlank() }
+                    .joinToString(", ")
+                    .ifEmpty { stringResource(id = R.string.placeholder) },
                 dateTime = data.getNow()
                     .format(DateTimeFormatter.ofPattern(DateTimeConstants.DATETIME_FORMAT_FULL))
             )
@@ -98,15 +97,15 @@ fun WeatherScreen(
                 StatCard(
                     modifier = Modifier.weight(1f),
                     title = stringResource(id = R.string.humidity),
-                    content = stringResource(
-                        id = R.string.percentage,
-                        data.currentWeather.main.humidity.toString()
-                    )
+                    content = data.currentWeather.main.humidity?.let {
+                        stringResource(id = R.string.percentage, it.toString())
+                    } ?: stringResource(id = R.string.placeholder)
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
                     title = stringResource(id = R.string.pop),
-                    content = data.forecast.list.first().pop.toPercentage()
+                    content = data.forecast.list.firstOrNull()?.pop?.toPercentage()
+                        ?: stringResource(id = R.string.placeholder)
                 )
             }
         }
@@ -124,18 +123,16 @@ fun WeatherScreen(
                 StatCard(
                     modifier = Modifier.weight(1f),
                     title = stringResource(id = R.string.wind_speed),
-                    content = stringResource(
-                        id = R.string.meter_per_sec,
-                        data.currentWeather.wind.speed.toString()
-                    )
+                    content = data.currentWeather.wind?.speed?.let {
+                        stringResource(id = R.string.meter_per_sec, it.toString())
+                    } ?: stringResource(id = R.string.placeholder)
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
                     title = stringResource(id = R.string.visibility),
-                    content = stringResource(
-                        id = R.string.meter,
-                        data.currentWeather.visibility.toString()
-                    )
+                    content = data.currentWeather.visibility?.let {
+                        stringResource(id = R.string.meter, it.toString())
+                    } ?: stringResource(id = R.string.placeholder)
                 )
             }
         }
@@ -144,14 +141,15 @@ fun WeatherScreen(
 
         item {
             val formatter = DateTimeFormatter.ofPattern(DateTimeConstants.TIME_FORMAT)
+            val placeholder = stringResource(id = R.string.placeholder)
 
             SunriseSunsetCard(
                 modifier = Modifier.fillMaxWidth(),
                 title = stringResource(id = R.string.sunrise_and_sunset),
                 content = stringResource(
                     id = R.string.two_parameters_with_slash,
-                    data.getSunriseDateTime().format(formatter),
-                    data.getSunsetDateTime().format(formatter)
+                    data.getSunriseDateTime()?.format(formatter) ?: placeholder,
+                    data.getSunsetDateTime()?.format(formatter) ?: placeholder
                 )
             )
         }

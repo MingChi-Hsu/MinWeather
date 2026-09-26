@@ -17,6 +17,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
@@ -33,10 +34,15 @@ object DataModule {
     ): FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
+    @OptIn(ExperimentalSerializationApi::class)
     @Singleton
     @Provides
     fun provideWeatherApi(): WeatherApiService {
-        val json = Json { ignoreUnknownKeys = true }
+        val json = Json {
+            ignoreUnknownKeys = true // Ignore fields the API adds that the models don't declare
+            coerceInputValues = true // Use the default value when a field is null but its type isn't nullable
+            explicitNulls = false // Treat a missing nullable field as null
+        }
         val retrofit = Retrofit.Builder()
             .baseUrl(WEATHER_URL)
             .addConverterFactory(json.asConverterFactory(CONTENT_TYPE.toMediaType()))

@@ -1,7 +1,7 @@
 # Min Weather
-![](https://img.shields.io/badge/Version-1.0.0-blue) ![](https://img.shields.io/badge/Platform-Android-green) ![](https://img.shields.io/badge/Language-Kotlin-purple) ![](https://img.shields.io/badge/License-MIT-white)
+![](https://img.shields.io/badge/Platform-Android-green) ![](https://img.shields.io/badge/Language-Kotlin-purple) ![](https://img.shields.io/badge/License-MIT-white)
 
-Min Weather is a side project built with Jetpact Compose to demonstrate morden Android development practices. It follows the MVVM + Repository Pattern, ensuring a clean architecture with clear separation and maintainability. The app also integrates essential Android tools, including Hilt for dependency injection, Retrofit and Kotlinx Serialization for API and data handling. 
+Min Weather is a side project built with Jetpack Compose to demonstrate modern Android development practices. It follows the MVVM + Repository Pattern, ensuring a clean architecture with clear separation and maintainability. The app also integrates essential Android tools, including Hilt for dependency injection, Retrofit and Kotlinx Serialization for API and data handling. 
 
 ## Features
 ### Current Location Weather
@@ -29,7 +29,7 @@ Min Weather is a side project built with Jetpact Compose to demonstrate morden A
 
 ## Technical Highlights
 - Used **MVVM**, **Repository Pattern** and **Clean Architecture** for scalability and maintainability
-- Built the UI with **Jetpact Compose** and **Material3** for a modern, responsive experience
+- Built the UI with **Jetpack Compose** and **Material3** for a modern, responsive experience
 - Managed UI state with **ViewModel** and **StateFlow**
 - Integrated **REST APIs** with **Retrofit** and parsed JSON with **Kotlinx Serialization** to streamline data flow
 - Implemented dependency injection with **Hilt**
@@ -38,9 +38,10 @@ Min Weather is a side project built with Jetpact Compose to demonstrate morden A
 - Supported **Adaptive App Icons** and **Themed App Icons**
 
 ## Release Note
-| Version | Description |
-| ------- | ----------- |
-| **1.0.0** | MVP development |
+| Version | Date | Description |
+| ------- | ---- | ----------- |
+| | 2026-09-26 | - Fixed location not being retrieved right after installation (no cached last location)<br>- Fixed the "Unable to access location" message flashing before the permission dialog appears<br>- Fixed weather failing to load when the API omits optional fields (missing values now show the placeholder). |
+|  | 2025-08-25 | MVP development |
 
 ## APIs
 - OpenWeather
@@ -64,12 +65,13 @@ Min Weather is a side project built with Jetpact Compose to demonstrate morden A
 - Kotlin 1.9.0
 - SDK version 28+
 
-## Roadmap
+## Wish List
 - Star / favorite multiple cities using Room Database
-- Support Jetpact Navigation for multi-screen navigation
-- Integrate CI/CD into the development workflow to imporve efficiency
-- Add automated tests
+- Support Jetpack Navigation for multi-screen navigation
+- Integrate CI/CD into the development workflow to improve efficiency
+- Add automated tests (Unit / UI / screenshot test)
 - Display weather forecasts with charts
+- Widget
 
 ## Contact
 [Mindy Hsu](https://www.linkedin.com/in/ming-chi-hsu/)

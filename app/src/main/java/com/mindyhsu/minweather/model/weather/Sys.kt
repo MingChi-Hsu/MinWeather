@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Sys(
     val type: Int? = null,
     val id: Int? = null,
-    val country: String,
-    val sunrise: Long,
-    val sunset: Long
+    val country: String? = null,
+    val sunrise: Long? = null,
+    val sunset: Long? = null
 )

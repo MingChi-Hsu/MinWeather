@@ -4,7 +4,6 @@ import android.Manifest
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,12 +24,12 @@ fun HomeRoute(
         permissions = listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
-        )
+        ),
+        // Only called once the request has a result, so "not requested yet" is never treated as denied
+        onPermissionsResult = { result ->
+            viewModel.handlePermissionResult(isGranted = result.values.any { it })
+        }
     )
-
-    LaunchedEffect(permissionState.permissions.map { it.status }) {
-        viewModel.handlePermissionResult(permissionState.permissions)
-    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {

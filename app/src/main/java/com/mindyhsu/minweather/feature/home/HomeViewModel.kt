@@ -1,11 +1,7 @@
 package com.mindyhsu.minweather.feature.home
 
-import android.Manifest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
 import com.mindyhsu.minweather.R
 import com.mindyhsu.minweather.data.repository.LocationRepository
 import com.mindyhsu.minweather.data.repository.WeatherRepository
@@ -147,16 +143,12 @@ class HomeViewModel @Inject constructor(
         _searchResults.value = emptyList()
     }
 
-    @OptIn(ExperimentalPermissionsApi::class)
-    fun handlePermissionResult(permissions: List<PermissionState>) {
-        val coarseGranted = permissions.find {
-            it.permission == Manifest.permission.ACCESS_COARSE_LOCATION
-        }?.status?.isGranted == true
-        val fineGranted = permissions.find {
-            it.permission == Manifest.permission.ACCESS_FINE_LOCATION
-        }?.status?.isGranted == true
-
-        if (coarseGranted || fineGranted) {
+    fun handlePermissionResult(isGranted: Boolean) {
+        Timber.d("[handlePermissionResult] isGranted=$isGranted, data=${_weatherUiModel.value != null}, loading=${_isLoading.value}")
+        if (isGranted) {
+            // Called on every ON_START, so skip if weather is already shown (e.g. a searched city) or loading
+            if (_weatherUiModel.value != null || _isLoading.value) return
+            _locationDesRes.value = null
             getCurrentLocation()
         } else {
             _locationDesRes.value = R.string.location_status_unable
@@ -167,7 +159,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
 
-            when (val result = locationRepository.getLastLocation()) {
+            when (val result = locationRepository.getCurrentLocation()) {
                 is Result.Success -> {
                     loadWeatherData(
                         result.data.latitude.toString(),
@@ -177,10 +169,12 @@ class HomeViewModel @Inject constructor(
 
                 is Result.Error -> {
                     Timber.d("[WeatherViewModel] getCurrentLocation result error")
+                    _locationDesRes.value = R.string.location_status_unable
                 }
 
                 is Result.Fail -> {
                     Timber.d("[WeatherViewModel] getCurrentLocation result fail")
+                    _locationDesRes.value = R.string.location_status_unable
                 }
 
                 is Result.Loading -> {

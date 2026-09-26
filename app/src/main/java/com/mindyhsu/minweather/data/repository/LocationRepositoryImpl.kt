@@ -10,8 +10,8 @@ import javax.inject.Inject
 class LocationRepositoryImpl @Inject constructor(
     private val locationDataSource: LocationDataSource
 ) : LocationRepository {
-    override suspend fun getLastLocation(): Result<Location> {
-        return locationDataSource.getLastLocation()
+    override suspend fun getCurrentLocation(): Result<Location> {
+        return locationDataSource.getCurrentLocation()
     }
 
     override suspend fun searchPlace(

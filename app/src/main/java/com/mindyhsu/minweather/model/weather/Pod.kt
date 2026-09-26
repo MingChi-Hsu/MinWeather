@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Pod(
-    val pod: String // (n - night, d - day)
+    val pod: String? = null // (n - night, d - day)
 )

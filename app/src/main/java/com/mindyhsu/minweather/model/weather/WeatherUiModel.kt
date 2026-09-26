@@ -21,9 +21,9 @@ data class WeatherUiModel(
 
     fun getNow() = epochToDateTime(currentWeather.dt)
 
-    fun getSunriseDateTime() = epochToDateTime(currentWeather.sys.sunrise)
+    fun getSunriseDateTime() = currentWeather.sys?.sunrise?.let { epochToDateTime(it) }
 
-    fun getSunsetDateTime() = epochToDateTime(currentWeather.sys.sunset)
+    fun getSunsetDateTime() = currentWeather.sys?.sunset?.let { epochToDateTime(it) }
 
     fun getIconUrl() = currentWeather.weather.firstOrNull()?.icon?.toUrl().orEmpty()
 
