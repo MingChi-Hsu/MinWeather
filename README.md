@@ -43,7 +43,7 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 ## Release Note
 | Version | Date | Description |
 | ------- | ---- | ----------- |
-| | 2026-11-05 | - Added Traditional Chinese localisation<br>- Added OpenWeather attribution with logo and link<br>- Updated app icons and added a monochrome icon for themed icons |
+| | 2026-11-05 | - Added Traditional Chinese localisation<br>- Added OpenWeather attribution with logo and link<br>- Updated app icons and added a monochrome icon for themed icons<br>- Upgraded target SDK to 36 (Android 16) |
 | | 2026-09-26 | - Fixed location not being retrieved right after installation (no cached last location)<br>- Fixed the "Unable to access location" message flashing before the permission dialog appears<br>- Fixed weather failing to load when the API omits optional fields (missing values now show the placeholder). |
 |  | 2025-08-25 | MVP development |
 
@@ -68,11 +68,11 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 - [Iansui 芫荽](https://github.com/ButTaiwan/iansui) – SIL Open Font License 1.1
 
 ## Requirements
-- Android Studio Narwhal | 2025.1.2
-- Android Gradle Plugin 8.4.0
-- Gradle 8.6 (via gradle-wrapper)
+- Android Studio Narwhal Feature Drop | 2025.1.2 or newer
+- Android Gradle Plugin 8.12.2
+- Gradle 8.13 (via gradle-wrapper)
 - Kotlin 1.9.0
-- SDK version 28+
+- Min SDK 28, Target SDK 36 (Android 16)
 
 ## Privacy Policy
 - [English](https://mingchi-hsu.github.io/app-doc/minweather/privacy-policy)
