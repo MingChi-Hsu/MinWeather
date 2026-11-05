@@ -87,7 +87,7 @@ fun SearchScreen(
                             }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = stringResource(id = R.string.cd_back)
                             )
                         }
                     },
@@ -101,7 +101,7 @@ fun SearchScreen(
                                 }) {
                                 Icon(
                                     imageVector = Icons.Filled.Clear,
-                                    contentDescription = "Clear"
+                                    contentDescription = stringResource(id = R.string.cd_clear)
                                 )
                             }
                         }

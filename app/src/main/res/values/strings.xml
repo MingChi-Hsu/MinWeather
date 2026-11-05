@@ -1,21 +1,29 @@
 <resources>
-    <string name="app_name">MinWeather</string>
+    <string name="app_name" translatable="false">MinWeather</string>
     <string name="location_status_unable">Unable to access location, update location permissions in settings to get weather information of your location.</string>
-    <string name="two_parameters_with_comma">%1$s, %2$s</string>
-    <string name="two_parameters_with_slash">%1$s / %2$s</string>
-    <string name="two_parameters_with_space">%1$s %2$s</string>
-    <string name="placeholder">--</string>
-    <string name="temp_with_feels_like">%1$s°C (Feels like %2$s°C)</string>
-    <string name="temp_high_low">H %1$s°C / L %2$s°C</string>
-    <string name="temp_degree">%s°C</string>
+    <string name="two_parameters_with_comma" translatable="false">%1$s, %2$s</string>
+    <string name="two_parameters_with_slash" translatable="false">%1$s / %2$s</string>
+    <string name="two_parameters_with_space" translatable="false">%1$s %2$s</string>
+    <string name="placeholder" translatable="false">--</string>
+    <string name="temp_with_feels_like">%1$s°C / Feels like %2$s°C</string>
+    <string name="temp_high_low" translatable="false">H %1$s°C / L %2$s°C</string>
+    <string name="temp_degree" translatable="false">%s°C</string>
     <string name="humidity">Humidity</string>
     <string name="pop">Probability of Precipitation</string>
-    <string name="percentage">%s%%</string>
+    <string name="percentage" translatable="false">%s%%</string>
     <string name="wind_speed">Wind Speed</string>
-    <string name="meter_per_sec">%s m/s</string>
+    <string name="meter_per_sec" translatable="false">%s m/s</string>
     <string name="visibility">Visibility</string>
-    <string name="meter">%s m</string>
+    <string name="meter" translatable="false">%s m</string>
     <string name="sunrise_and_sunset">Sunrise / Sunset</string>
     <string name="search_placeholder">Search for a location</string>
     <string name="search_result_empty">No results found for this location. Please try a different keyword.</string>
+
+    <!-- Required wording from OpenWeather, keep in English -->
+    <string name="openweather_attribution" translatable="false">Weather data provided by OpenWeather</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_search">Search</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_clear">Clear</string>
 </resources>

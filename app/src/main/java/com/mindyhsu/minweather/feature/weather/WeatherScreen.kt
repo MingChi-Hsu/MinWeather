@@ -1,5 +1,7 @@
 package com.mindyhsu.minweather.feature.weather
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -26,12 +28,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import com.mindyhsu.minweather.R
 import com.mindyhsu.minweather.common.DateTimeConstants
+import com.mindyhsu.minweather.common.NetworkConstants
 import com.mindyhsu.minweather.model.weather.Forecast24HUiModel
 import com.mindyhsu.minweather.model.weather.WeatherUiModel
 import com.mindyhsu.minweather.utils.toCelsiusString
@@ -188,6 +193,40 @@ fun WeatherScreen(
                 )
             )
         }
+
+        // --- OpenWeather data source attribution ---
+        item {
+            OpenWeatherAttribution(
+                modifier = Modifier.padding(vertical = dimensionResource(R.dimen.spacing_l))
+            )
+        }
+    }
+}
+
+@Composable
+private fun OpenWeatherAttribution(modifier: Modifier = Modifier) {
+    val uriHandler = LocalUriHandler.current
+
+    // The whole block links to the OpenWeather website, as required by the OpenWeather licence
+    Column(
+        modifier = modifier
+            .clickable { uriHandler.openUri(NetworkConstants.OPENWEATHER_WEBSITE_URL) }
+            .padding(dimensionResource(R.dimen.spacing_xs)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            modifier = Modifier.height(dimensionResource(R.dimen.attribution_logo_height)),
+            painter = painterResource(id = R.drawable.ic_openweather_logo),
+            contentDescription = null,
+            contentScale = ContentScale.Fit
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_xs)))
+        Text(
+            text = stringResource(id = R.string.openweather_attribution),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center
+        )
     }
 }
 

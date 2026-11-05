@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.mindyhsu.minweather.R
 import com.mindyhsu.minweather.model.geo.LocationInfo
 import com.mindyhsu.minweather.feature.search.SearchScreen
 import com.mindyhsu.minweather.feature.search.SearchUiState
@@ -43,7 +44,7 @@ fun HomeScreen(
         floatingActionButton = {
             AnimatedVisibility(visible = !isSearchMode && !weatherUiState.isLoading) {
                 FloatingActionButton(onClick = onFabClick) {
-                    Icon(Icons.Default.Search, contentDescription = "Search")
+                    Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.cd_search))
                 }
             }
         }

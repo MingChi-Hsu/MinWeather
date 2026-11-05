@@ -1,7 +1,7 @@
-# Min Weather
-![](https://img.shields.io/badge/Platform-Android-green) ![](https://img.shields.io/badge/Language-Kotlin-purple) ![](https://img.shields.io/badge/License-MIT-white)
+# MinWeather
+![](https://img.shields.io/badge/Platform-Android-green) ![](https://img.shields.io/badge/Language-Kotlin-purple)
 
-Min Weather is a side project built with Jetpack Compose to demonstrate modern Android development practices. It follows the MVVM + Repository Pattern, ensuring a clean architecture with clear separation and maintainability. The app also integrates essential Android tools, including Hilt for dependency injection, Retrofit and Kotlinx Serialization for API and data handling. 
+MinWeather is a side project built with Jetpack Compose to demonstrate modern Android development practices. It follows the MVVM + Repository Pattern, ensuring a clean architecture with clear separation and maintainability. The app also integrates essential Android tools, including Hilt for dependency injection, Retrofit and Kotlinx Serialization for API and data handling. 
 
 ## Features
 ### Current Location Weather
@@ -18,7 +18,7 @@ Min Weather is a side project built with Jetpack Compose to demonstrate modern A
 
 ### City Search
 - Enables city-name search to view weather details
-- Typed-ahead suggestions (autocomplete) for faster, more accurate results
+- Type-ahead suggestions (autocomplete) for faster, more accurate results
 
 <img src ="doc/search.gif" alt="isolated" width="200"/>
 
@@ -26,6 +26,9 @@ Min Weather is a side project built with Jetpack Compose to demonstrate modern A
 - Fully supports system light and dark themes
 
 <img src ="doc/light_dark_mode.gif" alt="isolated" width="200"/>
+
+### Localisation
+- Supports English and Traditional Chinese, following the device language
 
 ## Technical Highlights
 - Used **MVVM**, **Repository Pattern** and **Clean Architecture** for scalability and maintainability
@@ -40,6 +43,7 @@ Min Weather is a side project built with Jetpack Compose to demonstrate modern A
 ## Release Note
 | Version | Date | Description |
 | ------- | ---- | ----------- |
+| | 2026-11-05 | - Added Traditional Chinese localisation<br>- Added OpenWeather attribution with logo and link<br>- Updated app icons and added a monochrome icon for themed icons |
 | | 2026-09-26 | - Fixed location not being retrieved right after installation (no cached last location)<br>- Fixed the "Unable to access location" message flashing before the permission dialog appears<br>- Fixed weather failing to load when the API omits optional fields (missing values now show the placeholder). |
 |  | 2025-08-25 | MVP development |
 
@@ -48,6 +52,7 @@ Min Weather is a side project built with Jetpack Compose to demonstrate modern A
   - [Current Weather](https://openweathermap.org/current)
   - [5 Day / 3 Hour Forecast](https://openweathermap.org/forecast5)
   - [Geocoding](https://openweathermap.org/api/geocoding-api)
+  - Weather data provided by [OpenWeather](https://openweathermap.org/)
 
 ## Libraries
 - [Jetpack Compose](https://developer.android.com/jetpack/compose) – Modern UI toolkit
@@ -55,8 +60,12 @@ Min Weather is a side project built with Jetpack Compose to demonstrate modern A
 - [Retrofit](https://square.github.io/retrofit/) + [OkHttp](https://square.github.io/okhttp/) + [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) – Networking & JSON
 - [Coil](https://github.com/coil-kt/coil) – Image loading
 - [Google Play Services Location](https://developers.google.com/android/guides/overview) – Device location
+- [Accompanist Permissions](https://google.github.io/accompanist/permissions/) – Runtime permissions in Compose
 - [Timber](https://github.com/JakeWharton/timber) – Logging
 
+## Fonts
+- [jf open 粉圓](https://github.com/justfont/open-huninn-font) – SIL Open Font License 1.1
+- [Iansui 芫荽](https://github.com/ButTaiwan/iansui) – SIL Open Font License 1.1
 
 ## Requirements
 - Android Studio Narwhal | 2025.1.2
@@ -65,6 +74,10 @@ Min Weather is a side project built with Jetpack Compose to demonstrate modern A
 - Kotlin 1.9.0
 - SDK version 28+
 
+## Privacy Policy
+- [English](https://mingchi-hsu.github.io/app-doc/minweather/privacy-policy)
+- [繁體中文](https://mingchi-hsu.github.io/app-doc/minweather/privacy-policy-zh-tw)
+
 ## Wish List
 - Star / favorite multiple cities using Room Database
 - Support Jetpack Navigation for multi-screen navigation
@@ -72,6 +85,10 @@ Min Weather is a side project built with Jetpack Compose to demonstrate modern A
 - Add automated tests (Unit / UI / screenshot test)
 - Display weather forecasts with charts
 - Widget
+- Talkback
+- Localise weather descriptions from the OpenWeather API with the `lang` parameter (e.g. `zh_tw` for Traditional Chinese)
+- Use locale-aware date and time formats (e.g. `DateTimeFormatter.ofLocalizedDateTime`) instead of fixed English patterns
+- Add an About page with open source licences
 
 ## Contact
 [Mindy Hsu](https://www.linkedin.com/in/ming-chi-hsu/)
