@@ -16,3 +16,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Signed release outputs (AAB / APK)
+/app/release/
+*.aab
+*.jks
+*.keystore

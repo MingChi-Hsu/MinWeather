@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
+val localProperties = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+val hasReleaseSigning = localProperties.getProperty("RELEASE_STORE_FILE") != null
 
 android {
     namespace = "com.mindyhsu.minweather"
@@ -24,14 +28,26 @@ android {
             useSupportLibrary = true
         }
 
-        val properties = Properties()
-        project.rootProject.file("local.properties").inputStream().use { properties.load(it) }
-        val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
+        val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: ""
         buildConfigField("String", "WEATHER_API_KEY", "\"$apiKey\"")
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(localProperties.getProperty("RELEASE_STORE_FILE"))
+                storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")
+                keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS")
+                keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
         release {
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = false
 
             buildConfigField("Boolean", "TIMBER_VISIABLE", "false")
