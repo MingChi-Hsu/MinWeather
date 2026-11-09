@@ -60,9 +60,7 @@ fun WeatherScreen(
     ) {
         item {
             LocationHeader(
-                location = listOfNotNull(data.currentWeather.name, data.currentWeather.sys?.country)
-                    .filter { it.isNotBlank() }
-                    .joinToString(", ")
+                location = data.getLocationName()
                     .ifEmpty { stringResource(id = R.string.placeholder) },
                 dateTime = data.getNow()
                     .format(DateTimeFormatter.ofPattern(DateTimeConstants.DATETIME_FORMAT_FULL))

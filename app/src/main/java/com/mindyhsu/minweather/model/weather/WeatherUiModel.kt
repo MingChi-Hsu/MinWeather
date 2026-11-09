@@ -9,10 +9,14 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 
 data class WeatherUiModel(
     val currentWeather: CurrentWeather,
-    val forecast: Forecast
+    val forecast: Forecast,
+    // Name of the place the user picked in search. The weather API's own `name` is the nearest
+    // OpenWeather city to the coordinates, which can differ from the place the user chose
+    val selectedLocationName: String? = null
 ) {
     private val zoneOffset: ZoneOffset by lazy { ZoneOffset.ofTotalSeconds(currentWeather.timezone) }
 
@@ -20,6 +24,11 @@ data class WeatherUiModel(
         Instant.ofEpochSecond(second).atOffset(zoneOffset).toLocalDateTime()
 
     fun getNow() = epochToDateTime(currentWeather.dt)
+
+    fun getLocationName(): String =
+        selectedLocationName ?: listOfNotNull(currentWeather.name, currentWeather.sys?.country)
+            .filter { it.isNotBlank() }
+            .joinToString(", ")
 
     fun getSunriseDateTime() = currentWeather.sys?.sunrise?.let { epochToDateTime(it) }
 
@@ -50,19 +59,28 @@ data class WeatherUiModel(
         return forecast.list
             .map {
                 it to epochToDateTime(it.dt)
-            }.distinctBy { (_, dt) ->
-                dt.toLocalDate()
             }.filter { (_, dt) ->
                 dt.toLocalDate().isAfter(today)
-            }.map { (item, dt) ->
+            }.groupBy { (_, dt) ->
+                dt.toLocalDate()
+            }.map { (_, items) ->
+                // The 3-hour slot closest to midday represents the day's weather (icon and temperature)
+                val (midday, middayDt) = items.minBy { (_, dt) -> abs(dt.hour - MIDDAY_HOUR) }
+
+                // temp_min / temp_max of a single slot only describe that 3-hour slot,
+                // so the daily high and low come from all slots of the day
                 Forecast5DUiModel(
-                    dateStr = dt.format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                    dayOfWeek = dt.format(DateTimeFormatter.ofPattern(DAY_OF_WEEK_FORMAT)),
-                    icon = item.weather.firstOrNull()?.icon?.toUrl().orEmpty(),
-                    tempStr = item.main.temp.toCelsiusString(),
-                    minTempStr = item.main.tempMin.toCelsiusString(),
-                    maxTempStr = item.main.tempMax.toCelsiusString()
+                    dateStr = middayDt.format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                    dayOfWeek = middayDt.format(DateTimeFormatter.ofPattern(DAY_OF_WEEK_FORMAT)),
+                    icon = midday.weather.firstOrNull()?.icon?.toUrl().orEmpty(),
+                    tempStr = midday.main.temp.toCelsiusString(),
+                    minTempStr = items.minOf { (item, _) -> item.main.tempMin }.toCelsiusString(),
+                    maxTempStr = items.maxOf { (item, _) -> item.main.tempMax }.toCelsiusString()
                 )
             }
+    }
+
+    private companion object {
+        const val MIDDAY_HOUR = 12
     }
 }

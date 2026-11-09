@@ -186,7 +186,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun loadWeatherData(latitude: String, longitude: String) {
+    private fun loadWeatherData(
+        latitude: String,
+        longitude: String,
+        selectedLocationName: String? = null
+    ) {
         viewModelScope.launch {
             _isLoading.value = true
 
@@ -195,7 +199,7 @@ class HomeViewModel @Inject constructor(
 
             if (currentWeather is Result.Success && forecast is Result.Success) {
                 _weatherUiModel.update {
-                    WeatherUiModel(currentWeather.data, forecast.data)
+                    WeatherUiModel(currentWeather.data, forecast.data, selectedLocationName)
                 }
             } else {
                 Timber.d("[WeatherViewModel] loadWeatherData result error")
@@ -214,7 +218,11 @@ class HomeViewModel @Inject constructor(
 
     fun onResultClick(item: LocationInfo) {
         addRecent(item)
-        loadWeatherData(latitude = item.lat.toString(), longitude = item.lon.toString())
+        loadWeatherData(
+            latitude = item.lat.toString(),
+            longitude = item.lon.toString(),
+            selectedLocationName = listOfNotNull(item.name, item.country).joinToString(", ")
+        )
         exitSearchMode()
     }
 
