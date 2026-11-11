@@ -6,6 +6,8 @@ on:
       - main
       - 'feature/**'
       - 'fix/**'
+      - 'docs/**'
+      - 'chore/**'
 
 # Cancel an older run on the same branch when a new commit is pushed
 concurrency:

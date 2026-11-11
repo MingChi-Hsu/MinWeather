@@ -39,11 +39,13 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 - Loaded images with **Coil**
 - Retrieved the user's location with **FusedLocationProviderClient**
 - Supported **Adaptive App Icons** and **Themed App Icons**
+- Set up **CI/CD** with **GitHub Actions**: lint, unit tests and build on every push, and signed release bundles from version tags
 
 ## Release Note
 | Version | Date | Description |
 | ------- | ---- | ----------- |
-| | 2026-11-05 | - Added Traditional Chinese localisation<br>- Added OpenWeather attribution with logo and link<br>- Updated app icons and added a monochrome icon for themed icons<br>- Upgraded target SDK to 36 (Android 16) |
+| 1.0.1 | 2026-11-11 | - Fixed the 5-day forecast showing the same high and low temperature<br>- Fixed the 5-day forecast showing night-time icons<br>- Fixed the location name shown after picking a searched place |
+| 1.0.0 | 2026-11-08 | - First release on Google Play (closed testing)<br>- Added Traditional Chinese localisation<br>- Added OpenWeather attribution with logo and link<br>- Updated app icons and added a monochrome icon for themed icons<br>- Upgraded target SDK to 36 (Android 16) |
 | | 2026-09-26 | - Fixed location not being retrieved right after installation (no cached last location)<br>- Fixed the "Unable to access location" message flashing before the permission dialog appears<br>- Fixed weather failing to load when the API omits optional fields (missing values now show the placeholder). |
 |  | 2025-08-25 | MVP development |
 
@@ -81,7 +83,7 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 ## Wish List
 - Star / favorite multiple cities using Room Database
 - Support Jetpack Navigation for multi-screen navigation
-- Integrate CI/CD into the development workflow to improve efficiency
+- Automate uploads to Google Play from version tags
 - Add automated tests (Unit / UI / screenshot test)
 - Display weather forecasts with charts
 - Widget
