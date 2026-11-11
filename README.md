@@ -1,5 +1,5 @@
 # MinWeather
-![](https://img.shields.io/badge/Platform-Android-green) ![](https://img.shields.io/badge/Language-Kotlin-purple)
+[![CI](https://github.com/MingChi-Hsu/MinWeather/actions/workflows/ci.yml/badge.svg)](https://github.com/MingChi-Hsu/MinWeather/actions/workflows/ci.yml) ![](https://img.shields.io/badge/Platform-Android-green) ![](https://img.shields.io/badge/Language-Kotlin-purple)
 
 MinWeather is a side project built with Jetpack Compose to demonstrate modern Android development practices. It follows the MVVM + Repository Pattern, ensuring a clean architecture with clear separation and maintainability. The app also integrates essential Android tools, including Hilt for dependency injection, Retrofit and Kotlinx Serialization for API and data handling. 
 

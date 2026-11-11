@@ -7,10 +7,18 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
+
 val localProperties = Properties().apply {
     rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
-val hasReleaseSigning = localProperties.getProperty("RELEASE_STORE_FILE") != null
+
+fun secret(name: String): String? = System.getenv(name) ?: localProperties.getProperty(name)
+
+val hasReleaseSigning = secret("RELEASE_STORE_FILE") != null
+
+// The release workflow passes these from the git tag (e.g. v1.0.1 -> 1.0.1 / 10001)
+val appVersionName = (findProperty("appVersionName") as String?) ?: "1.0.0"
+val appVersionCode = (findProperty("appVersionCode") as String?)?.toInt() ?: 1
 
 android {
     namespace = "com.mindyhsu.minweather"
@@ -20,25 +28,25 @@ android {
         applicationId = "com.mindyhsu.minweather"
         minSdk = 28
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
 
-        val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: ""
+        val apiKey = secret("WEATHER_API_KEY") ?: ""
         buildConfigField("String", "WEATHER_API_KEY", "\"$apiKey\"")
     }
 
     signingConfigs {
         if (hasReleaseSigning) {
             create("release") {
-                storeFile = file(localProperties.getProperty("RELEASE_STORE_FILE"))
-                storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")
-                keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS")
-                keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD")
+                storeFile = file(secret("RELEASE_STORE_FILE")!!)
+                storePassword = secret("RELEASE_STORE_PASSWORD")
+                keyAlias = secret("RELEASE_KEY_ALIAS")
+                keyPassword = secret("RELEASE_KEY_PASSWORD")
             }
         }
     }
