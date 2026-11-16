@@ -28,7 +28,8 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 <img src ="doc/light_dark_mode.gif" alt="isolated" width="200"/>
 
 ### Localisation
-- Supports English and Traditional Chinese, following the device language
+- App text and weather descriptions in English and Traditional Chinese; other languages fall back to English
+- Dates and times follow the device's language and region (e.g. 13/11 in the UK, 11/13 in the US)
 
 ## Technical Highlights
 - Used **MVVM**, **Repository Pattern** and **Clean Architecture** for scalability and maintainability
@@ -88,9 +89,8 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 - Display weather forecasts with charts
 - Widget
 - Talkback
-- Localise weather descriptions from the OpenWeather API with the `lang` parameter (e.g. `zh_tw` for Traditional Chinese)
-- Use locale-aware date and time formats (e.g. `DateTimeFormatter.ofLocalizedDateTime`) instead of fixed English patterns
 - Add an About page with open source licences
+- Reload weather when the system language changes, so weather descriptions switch language straight away
 
 ## Contact
 [Mindy Hsu](https://www.linkedin.com/in/ming-chi-hsu/)
