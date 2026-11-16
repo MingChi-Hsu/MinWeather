@@ -1,14 +1,12 @@
 package com.mindyhsu.minweather.model.weather
 
-import com.mindyhsu.minweather.common.DateTimeConstants.DATE_FORMAT
-import com.mindyhsu.minweather.common.DateTimeConstants.DAY_OF_WEEK_FORMAT
-import com.mindyhsu.minweather.common.DateTimeConstants.TIME_FORMAT_AM_PM
+import com.mindyhsu.minweather.utils.DateTimeFormats
 import com.mindyhsu.minweather.utils.toUrl
 import com.mindyhsu.minweather.utils.toCelsiusString
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.abs
 
 data class WeatherUiModel(
@@ -36,7 +34,8 @@ data class WeatherUiModel(
 
     fun getIconUrl() = currentWeather.weather.firstOrNull()?.icon?.toUrl().orEmpty()
 
-    fun getNext24HForecast(): List<Forecast24HUiModel> {
+    fun getNext24HForecast(locale: Locale): List<Forecast24HUiModel> {
+        val hourFormatter = DateTimeFormats.time(locale)
         val now = getNow()
         val end = now.plusDays(1)
 
@@ -47,14 +46,16 @@ data class WeatherUiModel(
                 dt.isBefore(end)
             }.map { (item, dt) ->
                 Forecast24HUiModel(
-                    timeStr = dt.format(DateTimeFormatter.ofPattern(TIME_FORMAT_AM_PM)),
+                    timeStr = dt.format(hourFormatter),
                     icon = item.weather.firstOrNull()?.icon?.toUrl().orEmpty(),
                     tempStr = item.main.temp.toCelsiusString()
                 )
             }
     }
 
-    fun getNext5DForecast(): List<Forecast5DUiModel> {
+    fun getNext5DForecast(locale: Locale): List<Forecast5DUiModel> {
+        val dateFormatter = DateTimeFormats.shortDate(locale)
+        val dayOfWeekFormatter = DateTimeFormats.dayOfWeek(locale)
         val today = getNow().toLocalDate()
         return forecast.list
             .map {
@@ -70,8 +71,8 @@ data class WeatherUiModel(
                 // temp_min / temp_max of a single slot only describe that 3-hour slot,
                 // so the daily high and low come from all slots of the day
                 Forecast5DUiModel(
-                    dateStr = middayDt.format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                    dayOfWeek = middayDt.format(DateTimeFormatter.ofPattern(DAY_OF_WEEK_FORMAT)),
+                    dateStr = middayDt.format(dateFormatter),
+                    dayOfWeek = middayDt.format(dayOfWeekFormatter),
                     icon = midday.weather.firstOrNull()?.icon?.toUrl().orEmpty(),
                     tempStr = midday.main.temp.toCelsiusString(),
                     minTempStr = items.minOf { (item, _) -> item.main.tempMin }.toCelsiusString(),

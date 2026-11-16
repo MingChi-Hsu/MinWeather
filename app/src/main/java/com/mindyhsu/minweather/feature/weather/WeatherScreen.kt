@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -35,19 +36,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import com.mindyhsu.minweather.R
-import com.mindyhsu.minweather.common.DateTimeConstants
 import com.mindyhsu.minweather.common.NetworkConstants
 import com.mindyhsu.minweather.model.weather.Forecast24HUiModel
 import com.mindyhsu.minweather.model.weather.WeatherUiModel
+import com.mindyhsu.minweather.utils.DateTimeFormats
 import com.mindyhsu.minweather.utils.toCelsiusString
 import com.mindyhsu.minweather.utils.toPercentage
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun WeatherScreen(
     modifier: Modifier = Modifier,
     data: WeatherUiModel
 ) {
+    val locale = LocalConfiguration.current.locales[0]
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -63,7 +65,7 @@ fun WeatherScreen(
                 location = data.getLocationName()
                     .ifEmpty { stringResource(id = R.string.placeholder) },
                 dateTime = data.getNow()
-                    .format(DateTimeFormatter.ofPattern(DateTimeConstants.DATETIME_FORMAT_FULL))
+                    .format(DateTimeFormats.dateTime(locale))
             )
         }
 
@@ -143,7 +145,7 @@ fun WeatherScreen(
         item { Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_s))) }
 
         item {
-            val formatter = DateTimeFormatter.ofPattern(DateTimeConstants.TIME_FORMAT)
+            val formatter = DateTimeFormats.time(locale)
             val placeholder = stringResource(id = R.string.placeholder)
 
             SunriseSunsetCard(
@@ -166,7 +168,7 @@ fun WeatherScreen(
         }
 
         // --- Next 24H Forecast (every 3 hours) ---
-        item { HourlyForecastRow(items = data.getNext24HForecast()) }
+        item { HourlyForecastRow(items = data.getNext24HForecast(locale)) }
 
         item {
             HorizontalDivider(
@@ -177,7 +179,7 @@ fun WeatherScreen(
         }
 
         // --- 5 Days Forecast ---
-        items(data.getNext5DForecast()) {
+        items(data.getNext5DForecast(locale)) {
             DailyForecastRow(
                 dateAndWeek = stringResource(
                     id = R.string.two_parameters_with_space,
