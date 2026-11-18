@@ -20,6 +20,7 @@ Format: `vMAJOR.MINOR.PATCH`
 - All changes for this version are merged into `main` through pull requests, and CI is green
 - Tested on a real device or emulator, in both light and dark mode, and in English and Traditional Chinese
 - Add release note for this version in `README.md`
+- Update the Play Store release notes in `distribution/whatsnew/` (`whatsnew-en-GB` and `whatsnew-zh-TW`, 500 characters max each)
 - Update `README.md` Requirements if AGP, Gradle, Kotlin or SDK versions changed
 - New UI strings are also in `values-zh-rTW/strings.xml` (lint fails on missing translations)
 
@@ -38,12 +39,11 @@ git tag vX.Y.Z
 git push origin vX.Y.Z
 ```
 
-- The Release workflow on GitHub Actions succeeded
+- The Release workflow on GitHub Actions succeeded (it uploads to Google Play before creating the GitHub Release)
 - `MinWeather-X.Y.Z.aab` is attached to the GitHub Release
 
 ## 5. Google Play
 
--  Upload the AAB to the testing track (closed testing: Alpha)
-- Write the release notes (What's new) in English (en-GB) and Traditional Chinese (zh-TW)
+- The new version appears in closed testing (Alpha) in Play Console, with the release notes from `distribution/whatsnew/`
 - After review, install the update from Play and check weather loads (confirms the API key secret works)
 - Let testers know a new version is available
