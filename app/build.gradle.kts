@@ -56,7 +56,9 @@ android {
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
             }
-            isMinifyEnabled = false
+
+            isMinifyEnabled = true
+            isShrinkResources = true
 
             buildConfigField("Boolean", "TIMBER_VISIABLE", "false")
 

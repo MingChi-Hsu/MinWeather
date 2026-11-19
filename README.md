@@ -40,11 +40,13 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 - Loaded images with **Coil**
 - Retrieved the user's location with **FusedLocationProviderClient**
 - Supported **Adaptive App Icons** and **Themed App Icons**
+- Shrank and obfuscated release builds with **R8**
 - Set up **CI/CD** with **GitHub Actions**: lint, unit tests and build on every push, and signed release bundles from version tags, uploaded to Google Play closed testing automatically
 
 ## Release Note
 | Version | Date       | Description |
 | ------- |------------| ----------- |
+| 1.0.3 | 2026-11-19 | - Smaller app size with R8 code and resource shrinking |
 | 1.0.2 | 2026-11-18 | - Weather descriptions follow the app language (Traditional Chinese or English)<br>- Dates and times follow the device's language and region |
 | 1.0.1 | 2026-11-11 | - Fixed the 5-day forecast showing the same high and low temperature<br>- Fixed the 5-day forecast showing night-time icons<br>- Fixed the location name shown after picking a searched place |
 | 1.0.0 | 2026-11-08 | - First release on Google Play (closed testing)<br>- Added Traditional Chinese localisation<br>- Added OpenWeather attribution with logo and link<br>- Updated app icons and added a monochrome icon for themed icons<br>- Upgraded target SDK to 36 (Android 16) |

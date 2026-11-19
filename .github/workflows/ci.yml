@@ -33,8 +33,8 @@ jobs:
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Lint, unit test and build debug APK
-        run: ./gradlew lintDebug testDebugUnitTest assembleDebug
+      - name: Lint, unit test and build debug and release APKs
+        run: ./gradlew lintDebug testDebugUnitTest assembleDebug assembleRelease
 
       - name: Upload lint and test reports
         if: always()
