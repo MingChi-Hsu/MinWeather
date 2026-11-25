@@ -86,6 +86,10 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
+    testOptions {
+        // Android classes such as Location return default values in JVM unit tests instead of throwing
+        unitTests.isReturnDefaultValues = true
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -117,6 +121,7 @@ dependencies {
     implementation(libs.accompanist.permissions)
     testImplementation(libs.junit)
     testImplementation(libs.hilt.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
