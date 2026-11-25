@@ -10,8 +10,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -21,6 +23,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Characterisation tests: they record how HomeViewModel behaves today,
@@ -137,6 +140,108 @@ class HomeViewModelTest {
         assertEquals(listOf("C", "F", "E", "D", "B"), viewModel.searchUiState.value.recent.map { it.name })
     }
 
+    // --- Search typing ---
+    // These describe the behaviour we want, not the behaviour today (fix/search-debounce)
+
+    @Test
+    fun `searches only after the user stops typing for 500 ms`() = runTest(testDispatcher) {
+        collectUiStates()
+        viewModel.enterSearchMode()
+
+        viewModel.onSearchTextChange("london")
+        advanceTimeBy((SEARCH_DEBOUNCE_MS - 1).milliseconds)
+        assertEquals(emptyList<String>(), locationRepository.searchedQueries)
+
+        advanceTimeBy(1.milliseconds)
+        runCurrent()
+        assertEquals(listOf("london"), locationRepository.searchedQueries)
+    }
+
+    @Test
+    fun `typing quickly searches only the last text`() = runTest(testDispatcher) {
+        collectUiStates()
+        viewModel.enterSearchMode()
+
+        listOf("lond", "londo", "london").forEach { text ->
+            viewModel.onSearchTextChange(text)
+            advanceTimeBy(TIME_SHORTER_THAN_SEARCH_DEBOUNCE_MS.milliseconds)
+        }
+        advanceUntilIdle()
+
+        assertEquals(listOf("london"), locationRepository.searchedQueries)
+    }
+
+    @Test
+    fun `entering search mode does not search`() = runTest(testDispatcher) {
+        collectUiStates()
+
+        viewModel.enterSearchMode()
+        advanceUntilIdle()
+
+        assertEquals(emptyList<String>(), locationRepository.searchedQueries)
+    }
+
+    @Test
+    fun `two Latin letters do not search`() = runTest(testDispatcher) {
+        collectUiStates()
+        viewModel.enterSearchMode()
+
+        viewModel.onSearchTextChange("lo")
+        advanceUntilIdle()
+
+        assertEquals(emptyList<String>(), locationRepository.searchedQueries)
+    }
+
+    @Test
+    fun `two Chinese characters search, because many place names are only two characters`() = runTest(testDispatcher) {
+        collectUiStates()
+        viewModel.enterSearchMode()
+
+        viewModel.onSearchTextChange("台北")
+        advanceUntilIdle()
+
+        assertEquals(listOf("台北"), locationRepository.searchedQueries)
+    }
+
+    @Test
+    fun `one Chinese character does not search`() = runTest(testDispatcher) {
+        collectUiStates()
+        viewModel.enterSearchMode()
+
+        viewModel.onSearchTextChange("台")
+        advanceUntilIdle()
+
+        assertEquals(emptyList<String>(), locationRepository.searchedQueries)
+    }
+
+    @Test
+    fun `deleting text below the minimum length clears the results`() = runTest(testDispatcher) {
+        locationRepository.searchResult = Result.Success(listOf(place("London", "GB")))
+        locationRepository.searchDelayMs = TIME_SHORTER_THAN_SEARCH_DEBOUNCE_MS // the response comes back after the text has changed
+        collectUiStates()
+        viewModel.enterSearchMode()
+        viewModel.onSearchTextChange("london")
+        advanceUntilIdle()
+
+        viewModel.onSearchTextChange("lo")
+        advanceUntilIdle()
+
+        assertEquals(emptyList<LocationInfo>(), viewModel.searchUiState.value.results)
+    }
+
+    @Test
+    fun `leaving search mode before the debounce ends does not search`() = runTest(testDispatcher) {
+        collectUiStates()
+        viewModel.enterSearchMode()
+
+        viewModel.onSearchTextChange("london")
+        advanceTimeBy(TIME_SHORTER_THAN_SEARCH_DEBOUNCE_MS.milliseconds)
+        viewModel.exitSearchMode()
+        advanceUntilIdle()
+
+        assertEquals(emptyList<String>(), locationRepository.searchedQueries)
+    }
+
     // --- Helpers ---
 
     // The UI states use WhileSubscribed, so they only update while something collects them
@@ -147,4 +252,9 @@ class HomeViewModelTest {
 
     private fun place(name: String, country: String) =
         LocationInfo(name = name, lat = 0.0, lon = 0.0, country = country)
+
+    private companion object {
+        const val SEARCH_DEBOUNCE_MS = 500L
+        const val TIME_SHORTER_THAN_SEARCH_DEBOUNCE_MS = 100L
+    }
 }
