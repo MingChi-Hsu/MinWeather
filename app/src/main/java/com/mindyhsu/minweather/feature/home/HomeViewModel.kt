@@ -8,13 +8,14 @@ import com.mindyhsu.minweather.data.repository.WeatherRepository
 import com.mindyhsu.minweather.model.Result
 import com.mindyhsu.minweather.model.geo.LocationInfo
 import com.mindyhsu.minweather.model.weather.WeatherUiModel
+import com.mindyhsu.minweather.feature.search.SEARCH_DEBOUNCE_MS
 import com.mindyhsu.minweather.feature.search.SearchUiState
+import com.mindyhsu.minweather.feature.search.isLongEnoughToSearch
 import com.mindyhsu.minweather.utils.emptyString
 import com.mindyhsu.minweather.feature.weather.WeatherUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,13 +25,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -88,53 +90,49 @@ class HomeViewModel @Inject constructor(
             initialValue = SearchUiState()
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    private val searchingFlow: Flow<String> =
-        combine(_isSearchMode, _searchQuery) { inSearch, text -> inSearch to text }
-            .flatMapLatest { (inSearch, text) ->
-                if (!inSearch) emptyFlow()
-                else flowOf(text)
-                    .debounce(500L)
-            }
-            .distinctUntilChanged()
-
     init {
-        viewModelScope.launch {
-            searchingFlow
-                .onEach { text ->
-                    _isSearching.value = true
+        observeSearchQuery()
+    }
 
-                    when (val result =
-                        locationRepository.searchPlace(locationName = text, limit = 5)) {
-                        is Result.Success -> {
-                            _searchResults.update {
-                                result.data
-                            }
-                        }
+    // Search after the user stops typing, and only for text long enough to be a place name.
+    // Leaving search mode cancels a pending search; new text cancels a search still in flight.
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    private fun observeSearchQuery() {
+        _isSearchMode
+            .flatMapLatest { inSearch ->
+                if (!inSearch) emptyFlow()
+                else _searchQuery
+                    .debounce(SEARCH_DEBOUNCE_MS.milliseconds)
+                    .distinctUntilChanged()
+                    .mapLatest { text -> search(text) }
+            }
+            .launchIn(viewModelScope)
+    }
 
-                        is Result.Error -> {
-                            Timber.d("[WeatherViewModel] searchingFlow result error")
-                        }
+    private suspend fun search(text: String) {
+        if (!isLongEnoughToSearch(text)) {
+            _searchResults.value = emptyList()
+            return
+        }
 
-                        is Result.Fail -> {
-                            Timber.d("[WeatherViewModel] searchingFlow result fail")
-                        }
-
-                        is Result.Loading -> {
-                            Timber.d("[WeatherViewModel] searchingFlow loading")
-                        }
-                    }
-
-                    _isSearching.value = false
-                }
-                .stateIn(viewModelScope)
+        _isSearching.value = true
+        try {
+            when (val result = locationRepository.searchPlace(locationName = text, limit = 5)) {
+                is Result.Success -> _searchResults.value = result.data
+                is Result.Error -> Timber.d("[HomeViewModel] search result error")
+                is Result.Fail -> Timber.d("[HomeViewModel] search result fail")
+                is Result.Loading -> Timber.d("[HomeViewModel] search loading")
+            }
+        } finally {
+            _isSearching.value = false
         }
     }
 
     fun enterSearchMode() {
-        _isSearchMode.value = true
+        // Clear the text first, so the search flow never starts with old text
         _searchQuery.value = emptyString()
         _searchResults.value = emptyList()
+        _isSearchMode.value = true
     }
 
     fun exitSearchMode() {
@@ -211,7 +209,7 @@ class HomeViewModel @Inject constructor(
 
     fun onSearchTextChange(text: String) {
         _searchQuery.value = text
-        if (text.length < 3) {
+        if (!isLongEnoughToSearch(text)) {
             _searchResults.value = emptyList()
         }
     }

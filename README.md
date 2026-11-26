@@ -32,14 +32,22 @@ MinWeather is a side project built with Jetpack Compose to demonstrate modern An
 - Dates and times follow the device's language and region (e.g. 13/11 in the UK, 11/13 in the US)
 
 ## Technical Highlights
-- Used **MVVM**, **Repository Pattern** and **Clean Architecture** for scalability and maintainability
-- Built the UI with **Jetpack Compose** and **Material3** for a modern, responsive experience
+### Architecture
+- Used **MVVM** and the **Repository Pattern** for clear separation of concerns
 - Managed UI state with **ViewModel** and **StateFlow**
-- Integrated **REST APIs** with **Retrofit** and parsed JSON with **Kotlinx Serialization** to streamline data flow
 - Implemented dependency injection with **Hilt**
-- Loaded images with **Coil**
-- Retrieved the user's location with **FusedLocationProviderClient**
+
+### UI
+- Built the UI with **Jetpack Compose** and **Material3** for a modern, responsive experience
 - Supported **Adaptive App Icons** and **Themed App Icons**
+
+### Data
+- Integrated **REST APIs** with **Retrofit** and parsed JSON with **Kotlinx Serialization**
+- Retrieved the user's location with **FusedLocationProviderClient**
+- Loaded images with **Coil**
+
+### Quality & Delivery
+- Wrote **unit tests** with **JUnit** and **kotlinx-coroutines-test**, using fake repositories
 - Shrank and obfuscated release builds with **R8**
 - Set up **CI/CD** with **GitHub Actions**: lint, unit tests and build on every push, and signed release bundles from version tags, uploaded to Google Play closed testing automatically
 
